@@ -1,0 +1,11 @@
+flask
+gunicorn
+tchan
+requests
+gspread
+oauth2client
+pandas 
+altair
+openpyxl
+xlrd
+python-telegram-bot
