@@ -18,7 +18,7 @@ with open("credenciais.json", mode="w") as arquivo:
   arquivo.write(GOOGLE_SHEETS_CREDENTIALS)
 conta = ServiceAccountCredentials.from_json_keyfile_name("credenciais.json")
 api = gspread.authorize(conta)
-planilha = api.open_by_key("1srTpWeSZKLAxMcw_OqhKmzEJxwDPjP7jhvvNGudtx-E")
+planilha = api.open_by_key("1YorOvbJkLGBQLn1T1y_Re0eAm58HOIsl5qIoJxiCbcY")
 sheet = planilha.worksheet("Página1")
 
 app = Flask(__name__)
@@ -75,17 +75,24 @@ def projetos_aprovados():
     ontem = (date.today() - timedelta(days=1)).strftime('%Y-%m-%d')
     url = f"https://dadosabertos.camara.leg.br/api/v2/proposicoes?dataInicio={ontem}&dataFim={hoje}&siglaTipo=PL&ordenarPor=ano"
     response = requests.get(url)
-    
+
     if response.status_code == 200:
         dados = response.json()['dados']
         projetos_aprovados = []
-        
+
         for projeto in dados:
             tipo = projeto['siglaTipo']
             numero = projeto['numero']
             ementa = projeto['ementa']
             projetos_aprovados.append(f"{tipo} {numero} - {ementa}")
-            
+
+        # Escrever os dados no Google Sheets
+        creds = Credentials.from_authorized_user_file('credentials.json', SCOPES)
+        client = gspread.authorize(creds)
+        sheet = client.open('Nome_da_Planilha').sheet1
+        for projeto in projetos_aprovados:
+            sheet.append_row([projeto])
+
         return projetos_aprovados
     else:
         return f"Erro: {response.status_code}"
