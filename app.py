@@ -30,16 +30,14 @@ menu = """
 
 @app.route("/")
 def index():
-  return menu + "Olá, este é o site do robô sobre PLs aprovadas."
+    menu = """<a href="/">Página inicial</a> | <a href="/sobre">Sobre</a> | <a href="/contato">Contato</a> | <a href="/promocoes">PROMOÇÕES</a><br>"""
+    projetos = projetos_aprovados()
+    return menu + "Olá, este é o site do robô sobre PLs aprovadas.<br><br>Projetos de Lei Aprovados:<br>" + "<br>".join(projetos)
 
 @app.route("/sobre")
 def sobre():
-  return menu + "Aqui vai o conteúdo da página Sobre"
-
-@app.route("/contato")
-def contato():
-  return menu + "Aqui vai o conteúdo da página Contato"
-
+    return menu + "Aqui vai o conteúdo da página Sobre"
+  
 @app.route("/promocoes2")
 def promocoes2():
   conteudo = menu + """
