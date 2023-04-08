@@ -107,32 +107,33 @@ def telegram_bot():
     message = update["message"]["text"]
 
     if message.lower() == '1':
-        # code to display a list of projects approved in the last day
         projetos = projetos_aprovados()
-        nova_mensagem = {
-            "chat_id": chat_id,
-            "text": "Projetos de Lei aprovados na Câmara dos Deputados:\n" + "\n".join(projetos),
-        }
+        if projetos:
+            nova_mensagem = {
+                "chat_id": chat_id,
+                "text": "Projetos de Lei aprovados na Câmara dos Deputados:\n" + "\n".join(projetos),
+            }
+        else:
+            nova_mensagem = {
+                "chat_id": chat_id,
+                "text": "Nenhum projeto de lei foi aprovado recentemente.",
+            }
     elif message.lower() == '2':
-        # code to display a link to the Chamber of Deputies website
         nova_mensagem = {
             "chat_id": chat_id,
             "text": "Acesse o site do nosso bot para mais detalhes: https://site-versao-11.onrender.com",
         }
     elif message.lower() == '3':
-        # code to display a greeting message
         nova_mensagem = {
             "chat_id": chat_id,
             "text": "Olá! Em que posso ajudar?",
         }
     elif message.lower() == '4':
-        # code to display a farewell message
         nova_mensagem = {
             "chat_id": chat_id,
             "text": "Obrigado por usar nosso bot! Até a próxima!",
         }
     else:
-        # default message if no valid option is chosen
         nova_mensagem = {
             "chat_id": chat_id,
             "text": "Escolha uma das opções abaixo:\n1. Ver projetos de lei aprovados\n2. Acessar o site do nosso robô\n3. Saudação\n4. Despedida",
@@ -140,7 +141,6 @@ def telegram_bot():
 
     resposta = requests.post(f"https://api.telegram.org./bot{TELEGRAM_API_KEY}/sendMessage", data=nova_mensagem)
     print(resposta.text)
-    return "ok"      
-      
+    return "ok"
       
       
