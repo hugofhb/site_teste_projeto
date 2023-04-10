@@ -6,9 +6,9 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import requests
 from datetime import date, timedelta
-import telegram
+import telegram 
 import pandas as pd
-from telegram import ParseMode
+
 
 
 TELEGRAM_API_KEY = os.environ["TELEGRAM_API_KEY"]
