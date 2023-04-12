@@ -9,3 +9,4 @@ altair
 openpyxl
 xlrd
 python-telegram-bot
+matplotlib
