@@ -9,10 +9,12 @@ import requests
 from datetime import date, timedelta
 import telegram 
 import pandas as pd
-from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+from io import BytesIO
 from matplotlib.figure import Figure
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from wordcloud import WordCloud, STOPWORDS
-
+import base64
+from PIL import Image
 
 
 
@@ -53,10 +55,30 @@ def index():
     stopwords = set(STOPWORDS)
     wordcloud = WordCloud(stopwords=stopwords, background_color="white").generate(text)
 
-    # Converte a nuvem de palavras em um objeto de imagem para ser exibido na página
-    output = io.BytesIO()
-    wordcloud.to_image().save(output, 'PNG')
-    return menu + "<h1>Gráfico dos projetos de lei aprovados:</h1><br><img src='data:image/png;base64,{}'/>".format(output.getvalue().encode('base64').decode())
+    # Converte o gráfico de barras e a nuvem de palavras em objetos de imagem para serem exibidos na página
+    output1 = BytesIO()
+    FigureCanvas(fig).print_png(output1)
+    output2 = BytesIO()
+    wordcloud.to_image().save(output2, 'PNG')
+
+    # Concatena as imagens em uma única imagem
+    output = BytesIO()
+    img1 = Image.open(output1)
+    img2 = Image.open(output2)
+    widths, heights = zip(*(i.size for i in [img1, img2]))
+    total_width = sum(widths)
+    max_height = max(heights)
+    new_im = Image.new('RGB', (total_width, max_height))
+    x_offset = 0
+    for im in [img1, img2]:
+        new_im.paste(im, (x_offset,0))
+        x_offset += im.size[0]
+    new_im.save(output, format='PNG')
+
+    # Codifica a imagem em base64 para ser exibida na página
+    encoded_image = base64.b64encode(output.getvalue()).decode()
+
+    return menu + "<h1>Gráfico dos projetos de lei aprovados:</h1><br><img src='data:image/png;base64,{}'/>".format(encoded_image)
 
 @app.route("/sobre")
 def sobre():
