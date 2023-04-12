@@ -11,6 +11,8 @@ import telegram
 import pandas as pd
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
+from wordcloud import WordCloud, STOPWORDS
+
 
 
 
@@ -46,9 +48,14 @@ def index():
     ax = fig.add_subplot(111)
     projetos_df.plot(kind='bar', ax=ax)
 
-    # Converte o gráfico em um objeto de imagem para ser exibido na página
+    # Cria a nuvem de palavras
+    text = " ".join(projetos_df['projeto'].tolist())
+    stopwords = set(STOPWORDS)
+    wordcloud = WordCloud(stopwords=stopwords, background_color="white").generate(text)
+
+    # Converte a nuvem de palavras em um objeto de imagem para ser exibido na página
     output = io.BytesIO()
-    FigureCanvas(fig).print_png(output)
+    wordcloud.to_image().save(output, 'PNG')
     return menu + "<h1>Gráfico dos projetos de lei aprovados:</h1><br><img src='data:image/png;base64,{}'/>".format(output.getvalue().encode('base64').decode())
 
 @app.route("/sobre")
