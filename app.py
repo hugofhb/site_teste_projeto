@@ -1,4 +1,5 @@
 import os
+import io
 
 from flask import Flask, request ,render_template
 from tchan import ChannelScraper
@@ -8,6 +9,10 @@ import requests
 from datetime import date, timedelta
 import telegram 
 import pandas as pd
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+from matplotlib.figure import Figure
+
+
 
 
 
@@ -32,8 +37,19 @@ menu = """
 @app.route("/")
 def index():
     menu = """<a href="/">Página inicial</a> | <a href="/sobre">Sobre</a> | <a href="/contato">Contato</a> | <a href="/promocoes">PROMOÇÕES</a><br>"""
-    projetos = projetos_aprovados()
-    return menu + "Olá, este é o site do robô sobre PLs aprovadas.<br><br>Projetos de Lei Aprovados:<br>" + "<br>".join(projetos)
+
+    # Carrega os dados dos projetos de lei aprovados usando o pandas
+    projetos_df = pd.DataFrame(projetos_aprovados(), columns=['projeto'])
+
+    # Cria um gráfico de barras a partir dos dados
+    fig = Figure()
+    ax = fig.add_subplot(111)
+    projetos_df.plot(kind='bar', ax=ax)
+
+    # Converte o gráfico em um objeto de imagem para ser exibido na página
+    output = io.BytesIO()
+    FigureCanvas(fig).print_png(output)
+    return menu + "<h1>Gráfico dos projetos de lei aprovados:</h1><br><img src='data:image/png;base64,{}'/>".format(output.getvalue().encode('base64').decode())
 
 @app.route("/sobre")
 def sobre():
