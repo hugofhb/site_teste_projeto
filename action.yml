@@ -1,0 +1,33 @@
+name: Automação de Geração de Nuvem de Palavras
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pandas matplotlib wordcloud
+
+      - name: Run Python script
+        run: python gerar_nuvem_de_palavras.py
+        working-directory: ./scripts
+
+      - name: Upload generated files
+        uses: actions/upload-artifact@v2
+        with:
+          name: nuvem-de-palavras
+          path: nuvem_de_palavras/projetos.png
