@@ -13,4 +13,4 @@ matplotlib
 wordcloud
 numpy
 Pillow==8.4.0
-python-dev
+python3-dev
