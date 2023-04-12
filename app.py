@@ -110,19 +110,19 @@ def telegram_bot():
     if message.lower() == '1':
         projetos = projetos_aprovados()
         if projetos:
-            mensagem = "Projetos de Lei aprovados na Câmara dos Deputados:\n\n"
-            for i, projeto in enumerate(projetos):
-                mensagem += f"{i+1}. {projeto}\n"
+            mensagem = "*Projetos de Lei aprovados na Câmara dos Deputados:* \n\n"
+            for projeto in projetos:
+                mensagem += f"• {projeto}\n"
         else:
             mensagem = "Nenhum projeto de lei foi aprovado recentemente."
     elif message.lower() == '2':
-        mensagem = "Acesse o site do nosso bot e veja as Pls aprovadas no dia de hoje:\nhttps://site-teste-hugoh.onrender.com"
+        mensagem = "🔗 *Acesse o site do nosso bot e veja as Pls aprovadas no dia de hoje:* 🔗\n https://site-teste-hugoh.onrender.com"
     elif message.lower() == '3':
-        mensagem = "Olá! Em que posso ajudar?"
+        mensagem = "*Olá! Em que posso ajudar?* 😊"
     elif message.lower() == '4':
-        mensagem = "Obrigado por usar nosso bot! Até a próxima!"
+        mensagem = "*Obrigado por usar nosso bot! Até a próxima!* 👋"
     else:
-        mensagem = "Escolha uma das opções abaixo:\n\n1. Ver projetos de lei aprovados\n2. Acessar o site do nosso robô\n3. Saudação\n4. Despedida"
+        mensagem = "*Escolha uma das opções abaixo:* \n\n1. Ver projetos de lei aprovados\n2. Acessar o site do nosso robô\n3. Saudação\n4. Despedida"
 
     partes = []
     while mensagem:
@@ -133,11 +133,10 @@ def telegram_bot():
         nova_mensagem = {
             "chat_id": chat_id,
             "text": parte,
-            "parse_mode": "MarkdownV2"  # adiciona suporte a formatação em Markdown
+            "parse_mode": "HTML",
         }
         resposta = requests.post(f"https://api.telegram.org./bot{TELEGRAM_API_KEY}/sendMessage", data=nova_mensagem)
         print(resposta.text)
-    
+
     return "ok"
-      
       
