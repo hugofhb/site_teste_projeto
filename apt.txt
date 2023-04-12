@@ -1,0 +1,4 @@
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        $(grep -vE "^\s*#" apt.txt  | tr "\n" " ") && \
+    rm -rf /var/lib/apt/lists/*
