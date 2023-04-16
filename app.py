@@ -10,11 +10,9 @@ from datetime import date, timedelta
 import telegram 
 import pandas as pd
 from io import BytesIO
-from matplotlib.figure import Figure
-from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from wordcloud import WordCloud, STOPWORDS
 import base64
-from PIL import Image
+
 
 - name: Install Dependencies
   run: |
