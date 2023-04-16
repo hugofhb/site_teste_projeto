@@ -42,43 +42,26 @@ menu = """
 def index():
     menu = """<a href="/">Página inicial</a> | <a href="/sobre">Sobre</a> | <a href="/contato">Contato</a> | <a href="/promocoes">PROMOÇÕES</a><br>"""
 
-    # Carrega os dados dos projetos de lei aprovados usando o pandas
-    projetos_df = pd.DataFrame(projetos_aprovados(), columns=['projeto'])
+    try:
+        # Carrega os dados dos projetos de lei aprovados usando o pandas
+        projetos_df = pd.DataFrame(projetos_aprovados(), columns=['projeto'])
 
-    # Cria um gráfico de barras a partir dos dados
-    fig = Figure()
-    ax = fig.add_subplot(111)
-    projetos_df.plot(kind='bar', ax=ax)
+        # Cria a nuvem de palavras
+        text = " ".join(projetos_df['projeto'].tolist())
+        stopwords = set(STOPWORDS)
+        wordcloud = WordCloud(stopwords=stopwords, background_color="white").generate(text)
 
-    # Cria a nuvem de palavras
-    text = " ".join(projetos_df['projeto'].tolist())
-    stopwords = set(STOPWORDS)
-    wordcloud = WordCloud(stopwords=stopwords, background_color="white").generate(text)
+        # Converte a nuvem de palavras em um objeto de imagem para ser exibido na página
+        output = BytesIO()
+        wordcloud.to_image().save(output, 'PNG')
 
-    # Converte o gráfico de barras e a nuvem de palavras em objetos de imagem para serem exibidos na página
-    output1 = BytesIO()
-    FigureCanvas(fig).print_png(output1)
-    output2 = BytesIO()
-    wordcloud.to_image().save(output2, 'PNG')
+        # Codifica a imagem em base64 para ser exibida na página
+        encoded_image = base64.b64encode(output.getvalue()).decode()
 
-    # Concatena as imagens em uma única imagem
-    output = BytesIO()
-    img1 = Image.open(output1)
-    img2 = Image.open(output2)
-    widths, heights = zip(*(i.size for i in [img1, img2]))
-    total_width = sum(widths)
-    max_height = max(heights)
-    new_im = Image.new('RGB', (total_width, max_height))
-    x_offset = 0
-    for im in [img1, img2]:
-        new_im.paste(im, (x_offset,0))
-        x_offset += im.size[0]
-    new_im.save(output, format='PNG')
+        return menu + "<h1>Nuvem de palavras dos projetos de lei aprovados:</h1><br><img src='data:image/png;base64,{}'/>".format(encoded_image)
+    except Exception as e:
+        return menu + "<h1>Erro ao carregar os dados ou criar a nuvem de palavras:</h1><br>{}".format(str(e))
 
-    # Codifica a imagem em base64 para ser exibida na página
-    encoded_image = base64.b64encode(output.getvalue()).decode()
-
-    return menu + "<h1>Gráfico dos projetos de lei aprovados:</h1><br><img src='data:image/png;base64,{}'/>".format(encoded_image)
 
 @app.route("/sobre")
 def sobre():
