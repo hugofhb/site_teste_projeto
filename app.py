@@ -66,7 +66,6 @@ def index():
     except Exception as e:
         return menu + "<h1>Erro ao carregar os dados ou criar a nuvem de palavras:</h1><br>{}".format(str(e))
 
-
 @app.route("/sobre")
 def sobre():
     return menu + "Aqui vai o conteúdo da página Sobre"
