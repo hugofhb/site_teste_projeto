@@ -2,7 +2,7 @@ RUN apt-get update && \
     apt-get install -y python3-dev && \
     rm -rf /var/lib/apt/lists/*
     
-    FROM python:3.8-slim-buster
+FROM python:3.8-slim-buster
 
 RUN apt-get update && apt-get install -y build-essential
 
@@ -15,5 +15,4 @@ RUN pip install -r requirements.txt
 COPY . .
 
 CMD ["python", "app.py"]
-    
     
