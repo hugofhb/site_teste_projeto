@@ -16,7 +16,11 @@ from wordcloud import WordCloud, STOPWORDS
 import base64
 from PIL import Image
 
-
+- name: Install Dependencies
+  run: |
+    sudo apt-get update
+    sudo apt-get install -y python3-dev python3-pil
+    pip install -r requirements.txt
 
 
 
